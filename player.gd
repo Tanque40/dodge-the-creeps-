@@ -30,6 +30,9 @@ func _process(delta: float) -> void:
 	else:
 		$AnimatedSprite2D.stop()
 
+	if Input.is_action_pressed("do_dash"):
+		velocity *= 3 
+
 	position += velocity * delta
 	position = position.clamp(Vector2.ZERO, screen_size)
 	
@@ -42,3 +45,15 @@ func _process(delta: float) -> void:
 		$AnimatedSprite2D.animation = "arriba"
 		$AnimatedSprite2D.flip_v = velocity.y > 0
 	
+
+
+func _on_body_entered(body: Node2D) -> void:
+	#hide() # Player disappears after being hit.
+	hit.emit()
+	# Must be deferred as we can't change physics properties on a physics callback.
+	#$CollisionShape2D.set_deferred("disabled", true)
+
+func start(pos: Vector2):
+	position = pos
+	show()
+	$CollisionShape2D.disabled = false
